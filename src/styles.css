@@ -1,0 +1,34 @@
+.App {
+  font-family: arial;
+  text-align: center;
+}
+
+body {
+  font-family: arial;
+}
+
+.books-toggle {
+  margin-bottom: 20px;
+}
+
+.books-toggle button {
+  padding: 8px 16px;
+  margin-right: 10px;
+  border: 1px solid #ccc;
+  background-color: #f0f0f0;
+  cursor: pointer;
+}
+
+.books-toggle button.active {
+  background-color: #4caf50;
+  color: white;
+  border-color: #45a049;
+}
+
+header {
+  background-color: #333;
+  color: white;
+  padding: 15px;
+  text-align: right;
+  font-weight: bold;
+}
