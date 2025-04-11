@@ -3,16 +3,15 @@ import BooksStore from "../../stores/BooksStore";
 
 jest.mock("../../stores/BooksStore", () => {
   return jest.fn().mockImplementation(() => ({
-    loadBooks: jest.fn().mockResolvedValue(true),
-    loadPrivateBooks: jest.fn().mockResolvedValue(true),
+    loadBooks: jest.fn().mockResolvedValue([]),
+    loadPrivateBooks: jest.fn().mockResolvedValue([]),
     getDisplayedBooks: jest.fn().mockReturnValue([]),
     isLoading: false,
     error: null,
     addBook: jest.fn().mockResolvedValue(true),
     showPrivateBooks: false,
-    setShowPrivateBooks: jest.fn(),
-    getPrivateBooksCount: jest.fn().mockReturnValue(0),
-    createNewBook: jest.fn().mockReturnValue({}),
+    setError: jest.fn().mockReturnValue(false),
+    privateBooks: [],
   }));
 });
 
@@ -58,7 +57,11 @@ describe("BooksController", () => {
     expect(controller.getError()).toBe(mockError);
   });
 
-  test("addBook should create a book and add it to store", async () => {
+  test("addBook should validate inputs before creating a book", async () => {
+    await controller.addBook("", "");
+    expect(controller.booksStore.setError).toHaveBeenCalledWith("Name and author are required");
+    expect(controller.booksStore.addBook).not.toHaveBeenCalled();
+
     const name = "New Book";
     const author = "New Author";
 
@@ -72,45 +75,16 @@ describe("BooksController", () => {
     );
   });
 
-  test("getShowPrivateBooks should return showPrivateBooks state from store", () => {
-    controller.booksStore.showPrivateBooks = true;
+  test("togglePrivateBooks should update state in store", () => {
+    controller.togglePrivateBooks(true);
+    expect(controller.booksStore.showPrivateBooks).toBe(true);
 
-    expect(controller.getShowPrivateBooks()).toBe(true);
-
-    controller.booksStore.showPrivateBooks = false;
-
-    expect(controller.getShowPrivateBooks()).toBe(false);
+    controller.togglePrivateBooks(false);
+    expect(controller.booksStore.showPrivateBooks).toBe(false);
   });
 
-  test("setShowPrivateBooks should update state in store", () => {
-    controller.setShowPrivateBooks(true);
-
-    expect(controller.booksStore.setShowPrivateBooks).toHaveBeenCalledWith(
-      true
-    );
-
-    controller.setShowPrivateBooks(false);
-
-    expect(controller.booksStore.setShowPrivateBooks).toHaveBeenCalledWith(
-      false
-    );
-  });
-
-  test("getPrivateBooksCount should return private books count from store", () => {
-    const mockCount = 5;
-    controller.booksStore.getPrivateBooksCount.mockReturnValue(mockCount);
-
-    expect(controller.getPrivateBooksCount()).toBe(mockCount);
-    expect(controller.booksStore.getPrivateBooksCount).toHaveBeenCalledTimes(1);
-  });
-
-  test("createNewBook should delegate to store", () => {
-    const mockBook = { id: "new", name: "", author: "Unknown" };
-    controller.booksStore.createNewBook.mockReturnValue(mockBook);
-
-    const result = controller.createNewBook();
-
-    expect(result).toEqual(mockBook);
-    expect(controller.booksStore.createNewBook).toHaveBeenCalledTimes(1);
+  test("getPrivateBooksCount should return private books count", () => {
+    controller.booksStore.privateBooks = [{}, {}, {}];
+    expect(controller.getPrivateBooksCount()).toBe(3);
   });
 });

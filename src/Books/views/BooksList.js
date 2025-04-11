@@ -7,10 +7,6 @@ const BooksList = observer(({ controller }) => {
   const error = controller.getError();
   const showPrivateBooks = controller.getShowPrivateBooks();
 
-  const handleToggleView = (isPrivate) => {
-    controller.setShowPrivateBooks(isPrivate);
-  };
-
   if (isLoading) {
     return <div>Loading...</div>;
   }
@@ -23,13 +19,13 @@ const BooksList = observer(({ controller }) => {
     <div>
       <div className="books-toggle">
         <button
-          onClick={() => handleToggleView(false)}
+          onClick={() => controller.togglePrivateBooks(false)}
           className={!showPrivateBooks ? "active" : ""}
         >
           All Books
         </button>
         <button
-          onClick={() => handleToggleView(true)}
+          onClick={() => controller.togglePrivateBooks(true)}
           className={showPrivateBooks ? "active" : ""}
         >
           Private Books
@@ -39,11 +35,13 @@ const BooksList = observer(({ controller }) => {
       {books.length === 0 ? (
         <div>No books available</div>
       ) : (
-        books.map((book, i) => (
-          <div key={i}>
-            {book.author}: {book.name}
-          </div>
-        ))
+        <div className="books-list">
+          {books.map((book, i) => (
+            <div key={book.id || i} className="book-item">
+              <strong>{book.name}</strong>: {book.author}
+            </div>
+          ))}
+        </div>
       )}
     </div>
   );

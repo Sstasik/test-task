@@ -7,8 +7,7 @@ export default class BooksController {
   }
 
   async init() {
-    await this.loadBooks();
-    await this.loadPrivateBooks();
+    await Promise.all([this.loadBooks(), this.loadPrivateBooks()]);
   }
 
   async loadBooks() {
@@ -32,23 +31,24 @@ export default class BooksController {
   }
 
   async addBook(name, author) {
+    if (!name || !author) {
+      this.booksStore.setError("Name and author are required");
+      return false;
+    }
+    
     const book = new Book({ name, author });
     return this.booksStore.addBook(book);
+  }
+
+  togglePrivateBooks(showPrivate) {
+    this.booksStore.showPrivateBooks = showPrivate;
   }
 
   getShowPrivateBooks() {
     return this.booksStore.showPrivateBooks;
   }
 
-  setShowPrivateBooks(show) {
-    this.booksStore.setShowPrivateBooks(show);
-  }
-
   getPrivateBooksCount() {
-    return this.booksStore.getPrivateBooksCount();
-  }
-
-  createNewBook() {
-    return this.booksStore.createNewBook();
+    return this.booksStore.privateBooks.length;
   }
 }

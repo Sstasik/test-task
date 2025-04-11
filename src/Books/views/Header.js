@@ -9,13 +9,13 @@ const Header = observer(({ controller }) => {
       style={{
         position: "sticky",
         top: 0,
-        background: "#f0f0f0",
+        background: "pink",
         padding: "10px",
         borderBottom: "1px solid #ccc",
         zIndex: 100,
       }}
     >
-      <div>Your books: {privateBooksCount}</div>
+      <div style={{color: "black"}}>Your books: {privateBooksCount}</div>
     </header>
   );
 });

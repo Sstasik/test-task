@@ -24,11 +24,13 @@ export default class BooksStore {
         this.books = books;
         this.isLoading = false;
       });
+      return books;
     } catch (error) {
       runInAction(() => {
         this.error = error.message;
         this.isLoading = false;
       });
+      return [];
     }
   }
 
@@ -42,11 +44,13 @@ export default class BooksStore {
         this.privateBooks = privateBooks;
         this.isLoading = false;
       });
+      return privateBooks;
     } catch (error) {
       runInAction(() => {
         this.error = error.message;
         this.isLoading = false;
       });
+      return [];
     }
   }
 
@@ -55,20 +59,39 @@ export default class BooksStore {
     this.error = null;
 
     try {
-      const success = this.showPrivateBooks
-        ? await this.booksService.addPrivateBook(book)
-        : await this.booksService.addBook(book);
+      let success;
 
-      runInAction(() => {
+      if (this.showPrivateBooks) {
+        success = await this.booksService.addPrivateBook(book);
+
         if (success) {
-          if (this.showPrivateBooks) {
+          runInAction(() => {
             this.privateBooks.push(book);
-          } else {
-            this.books.push(book);
-          }
+            this.isLoading = false;
+          });
+          await this.loadBooks();
+        } else {
+          runInAction(() => {
+            this.isLoading = false;
+          });
         }
-        this.isLoading = false;
-      });
+      } else {
+        success = await this.booksService.addBook(book);
+
+        if (success) {
+          runInAction(() => {
+            this.books.push(book);
+            this.isLoading = false;
+          });
+
+          await this.loadPrivateBooks();
+        } else {
+          runInAction(() => {
+            this.isLoading = false;
+          });
+        }
+      }
+
       return success;
     } catch (error) {
       runInAction(() => {
@@ -79,19 +102,12 @@ export default class BooksStore {
     }
   }
 
-  setShowPrivateBooks(show) {
-    this.showPrivateBooks = show;
+  setError(message) {
+    this.error = message;
+    return false;
   }
 
   getDisplayedBooks() {
     return this.showPrivateBooks ? this.privateBooks : this.books;
-  }
-
-  getPrivateBooksCount() {
-    return this.privateBooks.length;
-  }
-
-  createNewBook() {
-    return new Book();
   }
 }
