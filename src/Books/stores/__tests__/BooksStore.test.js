@@ -3,11 +3,16 @@ import BooksService from "../../services/BooksService";
 import Book from "../../models/Book";
 
 jest.mock("../../services/BooksService", () => {
+  const getBooksMock = jest.fn();
+  const getPrivateBooksMock = jest.fn();
+  const addBookMock = jest.fn();
+  const addPrivateBookMock = jest.fn();
+  
   return jest.fn().mockImplementation(() => ({
-    getBooks: jest.fn(),
-    getPrivateBooks: jest.fn(),
-    addBook: jest.fn(),
-    addPrivateBook: jest.fn(),
+    getBooks: getBooksMock,
+    getPrivateBooks: getPrivateBooksMock,
+    addBook: addBookMock,
+    addPrivateBook: addPrivateBookMock,
   }));
 });
 
@@ -17,8 +22,11 @@ describe("BooksStore", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    
+    BooksService.mockClear();
+    
     store = new BooksStore();
-    mockBooksService = store.booksService;
+    mockBooksService = BooksService.mock.results[0].value;
   });
 
   test("should initialize with default values", () => {
