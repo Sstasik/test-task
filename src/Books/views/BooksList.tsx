@@ -25,13 +25,13 @@ const BooksList: React.FC<BooksListProps> = observer(({ controller }) => {
     <div>
       <div className="books-toggle">
         <button
-          onClick={() => controller.togglePrivateBooks(false)}
+          onClick={() => controller.setDisplayMode(false)}
           className={!showPrivateBooks ? "active" : ""}
         >
           All Books
         </button>
         <button
-          onClick={() => controller.togglePrivateBooks(true)}
+          onClick={() => controller.setDisplayMode(true)}
           className={showPrivateBooks ? "active" : ""}
         >
           Private Books

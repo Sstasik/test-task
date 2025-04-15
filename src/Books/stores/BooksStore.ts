@@ -108,6 +108,12 @@ export default class BooksStore {
     return false;
   }
 
+  setDisplayMode(showPrivate: boolean): void {
+    runInAction(() => {
+      this.showPrivateBooks = showPrivate;
+    });
+  }
+
   getDisplayedBooks(): Book[] {
     return this.showPrivateBooks ? this.privateBooks : this.books;
   }

@@ -12,6 +12,7 @@ jest.mock("../../stores/BooksStore", () => {
     showPrivateBooks: false,
     setError: jest.fn().mockReturnValue(false),
     privateBooks: [],
+    setDisplayMode: jest.fn(),
   }));
 });
 
@@ -75,12 +76,17 @@ describe("BooksController", () => {
     );
   });
 
-  test("togglePrivateBooks should update state in store", () => {
-    controller.togglePrivateBooks(true);
-    expect(controller.booksStore.showPrivateBooks).toBe(true);
-
-    controller.togglePrivateBooks(false);
-    expect(controller.booksStore.showPrivateBooks).toBe(false);
+  test("setDisplayMode should update display mode only when changed", () => {
+    controller.setDisplayMode(false);
+    expect(controller.booksStore.setDisplayMode).not.toHaveBeenCalled();
+    controller.setDisplayMode(true);
+    expect(controller.booksStore.setDisplayMode).toHaveBeenCalledWith(true);
+    controller.booksStore.setDisplayMode.mockClear();
+    
+    controller.booksStore.showPrivateBooks = true;
+    
+    controller.setDisplayMode(true);
+    expect(controller.booksStore.setDisplayMode).not.toHaveBeenCalled();
   });
 
   test("getPrivateBooksCount should return private books count", () => {

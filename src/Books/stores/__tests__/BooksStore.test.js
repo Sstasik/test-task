@@ -136,6 +136,16 @@ describe("BooksStore", () => {
     expect(mockBooksService.getPrivateBooks).not.toHaveBeenCalled();
   });
 
+  test("setDisplayMode should update showPrivateBooks state", () => {
+    expect(store.showPrivateBooks).toBe(false);
+    
+    store.setDisplayMode(true);
+    expect(store.showPrivateBooks).toBe(true);
+    
+    store.setDisplayMode(false);
+    expect(store.showPrivateBooks).toBe(false);
+  });
+
   test("getDisplayedBooks should return correct books based on showPrivateBooks", () => {
     store.books = [
       new Book({ id: 1, name: "Public Book", author: "Public Author" }),

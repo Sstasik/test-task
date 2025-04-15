@@ -42,8 +42,10 @@ export default class BooksController {
     return this.booksStore.addBook(book);
   }
 
-  togglePrivateBooks(showPrivate: boolean): void {
-    this.booksStore.showPrivateBooks = showPrivate;
+  setDisplayMode(showPrivate: boolean): void {
+    if (this.booksStore.showPrivateBooks !== showPrivate) {
+      this.booksStore.setDisplayMode(showPrivate);
+    }
   }
 
   getShowPrivateBooks(): boolean {
