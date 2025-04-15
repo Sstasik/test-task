@@ -8,11 +8,9 @@ export default class BooksStore {
   isLoading: boolean = false;
   error: string | null = null;
   showPrivateBooks: boolean = false;
-  private booksService: BooksService;
 
-  constructor() {
+  constructor(private booksService: BooksService) {
     makeAutoObservable(this);
-    this.booksService = new BooksService();
   }
 
   async loadBooks(): Promise<Book[]> {
@@ -114,7 +112,7 @@ export default class BooksStore {
     });
   }
 
-  getDisplayedBooks(): Book[] {
+  get displayedBooks(): Book[] {
     return this.showPrivateBooks ? this.privateBooks : this.books;
   }
 }

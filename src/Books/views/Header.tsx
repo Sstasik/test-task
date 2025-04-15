@@ -7,7 +7,7 @@ interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = observer(({ controller }) => {
-  const privateBooksCount = controller.getPrivateBooksCount();
+  const { privateBooks } = controller.store;
 
   return (
     <header
@@ -20,7 +20,7 @@ const Header: React.FC<HeaderProps> = observer(({ controller }) => {
         zIndex: 100,
       }}
     >
-      <div style={{color: "black"}}>Your books: {privateBooksCount}</div>
+      <div style={{color: "black"}}>Your books: {privateBooks.length}</div>
     </header>
   );
 });

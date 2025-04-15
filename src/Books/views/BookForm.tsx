@@ -9,7 +9,7 @@ interface BookFormProps {
 const BookForm: React.FC<BookFormProps> = observer(({ controller }) => {
   const [name, setName] = useState("");
   const [author, setAuthor] = useState("");
-  const error = controller.getError();
+  const error = controller.formError || controller.store.error;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

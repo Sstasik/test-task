@@ -1,40 +1,35 @@
+import { makeAutoObservable, runInAction } from "mobx";
 import BooksStore from "../stores/BooksStore";
 import Book from "../models/Book";
+import BooksService from "../services/BooksService";
 
 export default class BooksController {
-  booksStore: BooksStore;
+  private booksStore: BooksStore;
+  private booksService: BooksService;
+  
+  currentBook: Book | null = null;
+  formError: string | null = null;
 
   constructor() {
-    this.booksStore = new BooksStore();
+    makeAutoObservable(this);
+    this.booksService = new BooksService();
+    this.booksStore = new BooksStore(this.booksService);
   }
 
   async init(): Promise<void> {
-    await Promise.all([this.loadBooks(), this.loadPrivateBooks()]);
-  }
-
-  async loadBooks(): Promise<Book[]> {
-    return this.booksStore.loadBooks();
-  }
-
-  async loadPrivateBooks(): Promise<Book[]> {
-    return this.booksStore.loadPrivateBooks();
-  }
-
-  getBooks(): Book[] {
-    return this.booksStore.getDisplayedBooks();
-  }
-
-  getIsLoading(): boolean {
-    return this.booksStore.isLoading;
-  }
-
-  getError(): string | null {
-    return this.booksStore.error;
+    await Promise.all([
+      this.booksStore.loadBooks(),
+      this.booksStore.loadPrivateBooks()
+    ]);
   }
 
   async addBook(name: string, author: string): Promise<boolean> {
+    this.formError = null;
+    
     if (!name || !author) {
-      this.booksStore.setError("Name and author are required");
+      runInAction(() => {
+        this.formError = "Name and author are required";
+      });
       return false;
     }
     
@@ -48,11 +43,12 @@ export default class BooksController {
     }
   }
 
-  getShowPrivateBooks(): boolean {
-    return this.booksStore.showPrivateBooks;
+  clearErrors(): void {
+    this.formError = null;
+    this.booksStore.error = null;
   }
 
-  getPrivateBooksCount(): number {
-    return this.booksStore.privateBooks.length;
+  get store(): BooksStore {
+    return this.booksStore;
   }
 }

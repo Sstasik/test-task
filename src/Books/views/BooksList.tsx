@@ -8,10 +8,7 @@ interface BooksListProps {
 }
 
 const BooksList: React.FC<BooksListProps> = observer(({ controller }) => {
-  const books = controller.getBooks();
-  const isLoading = controller.getIsLoading();
-  const error = controller.getError();
-  const showPrivateBooks = controller.getShowPrivateBooks();
+  const { displayedBooks, isLoading, error, showPrivateBooks } = controller.store;
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -38,11 +35,11 @@ const BooksList: React.FC<BooksListProps> = observer(({ controller }) => {
         </button>
       </div>
 
-      {books.length === 0 ? (
+      {displayedBooks.length === 0 ? (
         <div>No books available</div>
       ) : (
         <div className="books-list">
-          {books.map((book: Book, i: number) => (
+          {displayedBooks.map((book: Book, i: number) => (
             <div key={book.id || i} className="book-item">
               <strong>{book.name}</strong>: {book.author}
             </div>
